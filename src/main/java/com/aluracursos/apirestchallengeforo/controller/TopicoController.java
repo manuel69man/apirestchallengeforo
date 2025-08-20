@@ -1,6 +1,8 @@
 package com.aluracursos.apirestchallengeforo.controller;
 
 import com.aluracursos.apirestchallengeforo.domain.topico.*;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
@@ -25,7 +28,6 @@ public class TopicoController {
                                                      UriComponentsBuilder uriComponentsBuilder) {
         Topico topico = topicoRepository.save(new Topico(datosRegistroTopico));
         DatosRespuestaTopico datosRespuestaMedico = new DatosRespuestaTopico(topico.getTitulo(), topico.getMensaje(),topico.getFecha_creacion());
-
         URI url = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(url).body(datosRegistroTopico);
 
@@ -33,9 +35,46 @@ public class TopicoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<DatosListadoTopico>> listadoMedicos(@PageableDefault(size = 3) Pageable paginacion) {
+    public ResponseEntity<Page<DatosListadoTopico>> listadoMedicos(@PageableDefault(size = 5) Pageable paginacion) {
         return ResponseEntity.ok(topicoRepository.findByStatusTrue(paginacion).map(DatosListadoTopico::new));
 
+    }
+
+    @Transactional
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity eliminarTopico(@PathVariable Long id) {
+        Optional<Topico> topico =Optional.of(topicoRepository.getReferenceById(id));
+        if (topico.isPresent()){
+            if (topico.get().getId()!=null){
+                topicoRepository.deleteById(topico.get().getId());
+                return ResponseEntity.ok().build();
+            }
+        }
+        throw new EntityNotFoundException();
+    }
+
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity detallarTopicoPorId(@PathVariable Long id) {
+        Optional<Topico> topico =Optional.of(topicoRepository.getReferenceById(id));
+        if (topico.isPresent() && topico.get().getId()!=null){
+                Topico tp = topico.get();
+                return ResponseEntity.ok(new DTOTopico(tp.getTitulo(),tp.getMensaje(),tp.getFecha_creacion(),tp.isStatus(),tp.getAutor_id(),tp.getCurso_id()));
+        }
+        throw new EntityNotFoundException();
+    }
+
+    @Transactional
+    @PatchMapping("/{id}")
+    public ResponseEntity actualizarTopico(@RequestBody @Valid DTOTopico datosParaActualizarTopico,@PathVariable Long id) {
+        Optional<Topico> topico = Optional.of(topicoRepository.getReferenceById(id));
+        if (topico.isPresent() && topico.get().getId()!=null){
+
+        }
+        topico.get().actualizarDatos(datosParaActualizarTopico);
+        return ResponseEntity.ok(topico.get());
     }
 
 

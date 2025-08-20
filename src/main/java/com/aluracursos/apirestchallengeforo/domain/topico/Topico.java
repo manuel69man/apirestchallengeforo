@@ -35,6 +35,25 @@ public class Topico {
         this.curso_id = 1L;
     }
 
+    public void actualizarDatos(DTOTopico datos) {
+        if (datos.titulo() != null) {
+            this.titulo = datos.titulo();
+        }
+        if (datos.mensaje() != null) {
+            this.mensaje = datos.mensaje();
+        }
+        if (datos.fecha_creacion() != null) {
+            this.fecha_creacion = datos.fecha_creacion();
+        }
+        if (datos.autor_id() != null) {
+            this.autor_id = datos.autor_id();
+        }
+        if (datos.curso_id() != null) {
+            this.curso_id = datos.curso_id();
+        }
+        this.status = datos.status();
+    }
+
 
     public void desactivarTopico(){this.status=false;}
 }
