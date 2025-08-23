@@ -35,7 +35,10 @@ public class Topico {
         this.curso_id = 1L;
     }
 
-    public void actualizarDatos(DTOTopico datos) {
+    public void actualizarDatos(DatosActualizarTopico datos) {
+        if (datos.id()!=null){
+            this.id=datos.id();
+        }
         if (datos.titulo() != null) {
             this.titulo = datos.titulo();
         }

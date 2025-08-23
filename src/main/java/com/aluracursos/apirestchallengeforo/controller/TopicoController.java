@@ -1,3 +1,4 @@
+
 package com.aluracursos.apirestchallengeforo.controller;
 
 import com.aluracursos.apirestchallengeforo.domain.topico.*;
@@ -60,21 +61,25 @@ public class TopicoController {
     public ResponseEntity detallarTopicoPorId(@PathVariable Long id) {
         Optional<Topico> topico =Optional.of(topicoRepository.getReferenceById(id));
         if (topico.isPresent() && topico.get().getId()!=null){
-                Topico tp = topico.get();
-                return ResponseEntity.ok(new DTOTopico(tp.getTitulo(),tp.getMensaje(),tp.getFecha_creacion(),tp.isStatus(),tp.getAutor_id(),tp.getCurso_id()));
+            Topico tp = topico.get();
+            return ResponseEntity.ok(new DTOTopico(tp.getTitulo(),tp.getMensaje(),tp.getFecha_creacion(),tp.isStatus(),tp.getAutor_id(),tp.getCurso_id()));
         }
         throw new EntityNotFoundException();
     }
 
     @Transactional
     @PatchMapping("/{id}")
-    public ResponseEntity actualizarTopico(@RequestBody @Valid DTOTopico datosParaActualizarTopico,@PathVariable Long id) {
-        Optional<Topico> topico = Optional.of(topicoRepository.getReferenceById(id));
-        if (topico.isPresent() && topico.get().getId()!=null){
-
-        }
-        topico.get().actualizarDatos(datosParaActualizarTopico);
-        return ResponseEntity.ok(topico.get());
+    public ResponseEntity actualizarTopico(@RequestBody @Valid DatosActualizarTopico datosParaActualizarTopico,@PathVariable Long id) {
+        Topico topico = topicoRepository.getReferenceById(id);
+        topico.actualizarDatos(datosParaActualizarTopico);
+        return ResponseEntity
+                .ok(new DatosActualizarTopico(topico.getId(),
+                        topico.getTitulo(),
+                        topico.getMensaje(),
+                        topico.getFecha_creacion(),
+                        topico.isStatus(),
+                        topico.getAutor_id(),
+                        topico.getCurso_id()));
     }
 
 
