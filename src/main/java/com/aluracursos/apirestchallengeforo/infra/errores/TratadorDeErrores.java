@@ -1,4 +1,4 @@
-package com.aluracursos.apirestchallengeforo.infra;
+package com.aluracursos.apirestchallengeforo.infra.errores;
 
 import com.aluracursos.apirestchallengeforo.domain.ValidacionException;
 import jakarta.persistence.EntityNotFoundException;

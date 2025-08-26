@@ -2,6 +2,7 @@
 package com.aluracursos.apirestchallengeforo.controller;
 
 import com.aluracursos.apirestchallengeforo.domain.topico.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
-//@SecurityRequirement(name = "bearer-key")
+@SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
     @Autowired
